@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 # Set up Google Sheets API
 def get_google_sheets_data():
+    logger.info(f"Google Sheets credentials path: {config.GOOGLE_SHEETS_CREDENTIALS_PATH}")
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name(config.GOOGLE_SHEETS_CREDENTIALS_PATH, scope)
     client = gspread.authorize(creds)
