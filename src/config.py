@@ -1,6 +1,6 @@
 import os
 
-TELEGRAM_TOKEN = os.getenv('7309388925:AAFkxIYbaT10nDFKy0Q7igbC7JJ4EWratYY')
-CHAT_ID = os.getenv('635953263')
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+CHAT_ID = os.getenv('CHAT_ID')
 GOOGLE_SHEETS_CREDENTIALS_PATH = '/Users/spectrumdesigns/Desktop/WoA-Bot/credentials/edric-woa-bot-deb619a67c09.json'
 SHEET_NAME = 'Affirmations-WoA'
