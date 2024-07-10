@@ -8,9 +8,15 @@ logger = logging.getLogger(__name__)
 
 # Set up Google Sheets API
 def get_google_sheets_data():
-    logger.info(f"Google Sheets credentials path: {config.GOOGLE_SHEETS_CREDENTIALS_PATH}")
+    credentials_path = config.GOOGLE_SHEETS_CREDENTIALS_PATH
+    logger.info(f"Google Sheets credentials path: {credentials_path}")
+
+    if not os.path.exists(credentials_path):
+        logger.error(f"Credentials file not found at {credentials_path}")
+        raise FileNotFoundError(f"Credentials file not found at {credentials_path}")
+
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(config.GOOGLE_SHEETS_CREDENTIALS_PATH, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(credentials_path, scope)
     client = gspread.authorize(creds)
     sheet = client.open(config.SHEET_NAME).sheet1
     return sheet.get_all_records()
