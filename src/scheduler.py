@@ -16,7 +16,7 @@ history = []
 affirmations_sent_today = 0
 last_sent_time = None
 
-async def send_affirmation():
+async def send_affirmation(prefer_user=False):
     global affirmations_sent_today, last_sent_time, history
 
     logger.info("send_affirmation function called")
@@ -34,8 +34,14 @@ async def send_affirmation():
         return
 
     # Determine the time of day
-    time_of_day = 'Morning' if now.hour < 12 else 'Night' if now.hour >= 18 else 'Anytime'
-    affirmation = select_affirmation(affirmations, history, time_of_day)
+    if now.hour < 12:
+        time_of_day = 'Morning'
+    elif now.hour < 18:
+        time_of_day = 'Afternoon'
+    else:
+        time_of_day = 'Evening'
+
+    affirmation = select_affirmation(affirmations, history, time_of_day, prefer_user)
 
     if affirmation:
         await send_message(affirmation["Affirmation"])
@@ -49,17 +55,16 @@ async def send_affirmation():
         affirmations_sent_today = 0
 
 async def check_minimum_affirmations():
-    # Ensure at least 1 affirmation every 3 days
     global affirmations_sent_today
     if affirmations_sent_today == 0:
-        await send_affirmation()
+        await send_affirmation(prefer_user=True)
 
 def run_async_job(job):
     loop = asyncio.get_event_loop()
     loop.run_until_complete(job)
 
 # Schedule jobs
-schedule.every().day.at("08:00").do(lambda: run_async_job(send_affirmation()))
+schedule.every().day.at("08:00").do(lambda: run_async_job(send_affirmation(prefer_user=True)))
 schedule.every().day.at("20:00").do(lambda: run_async_job(send_affirmation()))
 schedule.every(3).days.do(lambda: run_async_job(check_minimum_affirmations()))
 

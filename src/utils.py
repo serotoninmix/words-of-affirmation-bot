@@ -23,7 +23,7 @@ def get_google_sheets_data():
     return sheet.get_all_records()
 
 # Select a random affirmation
-def select_affirmation(affirmations, history, time_of_day):
+def select_affirmation(affirmations, history, time_of_day, prefer_user=False):
     available_affirmations = []
     for a in affirmations:
         try:
@@ -34,6 +34,11 @@ def select_affirmation(affirmations, history, time_of_day):
 
     if not available_affirmations:
         return None
+
+    if prefer_user:
+        user_affirmations = [a for a in available_affirmations if a["Authorship"] == "user"]
+        if user_affirmations:
+            return random.choice(user_affirmations)
 
     return random.choice(available_affirmations)
 
